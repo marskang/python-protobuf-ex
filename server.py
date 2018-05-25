@@ -19,7 +19,7 @@ def echo(_socket, address):
         #    print peer_ip, peer_port, ip, port
     per = person_pb2.person()
     per.id = 6
-    per.name = '赵健康'
+    per.name = 'zjk'
     data = per.SerializeToString()
     _socket.send(data)
             
