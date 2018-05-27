@@ -27,12 +27,6 @@ s.connect((HOST, PORT))
 _len = recv_fill(s, HEADER_LENGTH)
 (packet_len,) = struct.unpack(LENGTH_HEADER, _len)
 data = recv_fill(s, packet_len)
-'''
-per = person_pb2.person()
-per.ParseFromString(data)
-print per.id
-print per.name
-'''
 msg = message_pb2.Message()
 msg.ParseFromString(data)
 print msg.content
