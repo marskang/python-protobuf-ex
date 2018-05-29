@@ -16,6 +16,7 @@ HEADER_LENGTH = struct.calcsize(LENGTH_HEADER)
 
 all_msg = ''
 
+game_over = False
 
 class RecvThread(threading.Thread):
     
@@ -25,6 +26,9 @@ class RecvThread(threading.Thread):
 
     def run(self):
         while True:
+            if game_over:
+                print 'game_over'
+                break
             global all_msg
             _len = recv_fill(self.sock, HEADER_LENGTH)
             (packet_len,) = struct.unpack(LENGTH_HEADER, _len)
@@ -47,6 +51,8 @@ def recv_fill(sock, packet_len):
         buff += data
     return buff
 
+
+
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((HOST, PORT))
 name = raw_input('input name:')
@@ -63,10 +69,9 @@ while True:
     data = msg.SerializeToString()
     packet_len = struct.pack(LENGTH_HEADER, len(data))
     s.sendall(packet_len + data)
-
-
-
-
-
+    if content == 'quit':
+        game_over = True
+        s.close()
+        break
 
 
