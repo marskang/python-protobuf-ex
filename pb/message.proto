@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+import "player.proto";
+
+message Message {
+    Player player = 1;
+    string content = 2;
+}
