@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0cheader.proto\"/\n\x06Header\x12\x0e\n\x06length\x18\x01 \x01(\x05\x12\x15\n\rprotocol_file\x18\x02 \x01(\tb\x06proto3')
+  serialized_pb=_b('\n\x0cheader.proto\"X\n\x06Header\x12\x0e\n\x06length\x18\x01 \x01(\x05\x12\x0e\n\x06module\x18\x02 \x01(\t\x12\r\n\x05\x63lazz\x18\x03 \x01(\t\x12\x0e\n\x06method\x18\x04 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x05 \x01(\tb\x06proto3')
 )
 
 
@@ -40,8 +40,29 @@ _HEADER = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='protocol_file', full_name='Header.protocol_file', index=1,
+      name='module', full_name='Header.module', index=1,
       number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='clazz', full_name='Header.clazz', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='method', full_name='Header.method', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='content', full_name='Header.content', index=4,
+      number=5, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=_b("").decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -59,7 +80,7 @@ _HEADER = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=16,
-  serialized_end=63,
+  serialized_end=104,
 )
 
 DESCRIPTOR.message_types_by_name['Header'] = _HEADER

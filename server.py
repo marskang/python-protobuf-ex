@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from gevent.server import StreamServer
+import sys
 import struct
 import traceback
 import message_pb2
 import player_pb2
+import importlib
+from pb import header_pb2
+from gevent.server import StreamServer
 
 LENGTH_HEADER = '!I'
 HEADER_LENGTH = struct.calcsize(LENGTH_HEADER)
@@ -39,35 +42,21 @@ def quit_conn(sock, name):
 
 
 def recv(sock, addr):
-    
-    socks.append(sock)
-    (peer_ip, peer_port) = sock.getpeername()
-    while True:
-        _len = recv_fill(sock, HEADER_LENGTH)
-        (packet_len,) = struct.unpack(LENGTH_HEADER, _len)
-        data = recv_fill(sock, packet_len)
-        if data is None:
-            quit_conn(sock, 'xxx')
-            break
-        msg = _len + data
-        tt = message_pb2.Message()
-        tt.ParseFromString(data)
-        print tt.content
-        if tt.content == 'quit':
-            print tt.player.name
-            quit_conn(sock, tt.player.name)
-            break
-        for item in socks:
-            # (_ip, _port) = item.getpeername()
-            # if _ip == peer_ip and _port == peer_port:
-            #    continue
-            item.sendall(msg)      
+    _len = recv_fill(sock, HEADER_LENGTH)
+    (packet_len,) = struct.unpack(LENGTH_HEADER, _len)
+    data = recv_fill(sock, packet_len)
+    header = header_pb2.Header()
+    header.ParseFromString(data)
+    m = importlib.import_module(header.module)
+    clazz = getattr(m, header.clazz)
+    obj = clazz()
+    func =  getattr(obj, header.method)
+    content = recv_fill(sock, header.length)
+    func(content)
+    sock.close()
 
 if __name__ == '__main__':
     server = StreamServer(('0.0.0.0', 8888), recv)
     server.serve_forever()
-
-
-
 
 
