@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import socket
-import message_pb2
+from pb import message_pb2
+from pb import header_pb2
 import player_pb2
 import struct
 import threading
@@ -33,10 +34,12 @@ class RecvThread(threading.Thread):
             _len = recv_fill(self.sock, HEADER_LENGTH)
             (packet_len,) = struct.unpack(LENGTH_HEADER, _len)
             data = recv_fill(s, packet_len)
-            msg = message_pb2.Message()
-            msg.ParseFromString(data)
+            # msg = message_pb2.Message()
+            # msg.ParseFromString(data)
+            # os.system('clear')
+            # t = '\n' + msg.player.name + ': ' + msg.content + '\n'
             os.system('clear')
-            t = '\n' + msg.player.name + ': ' + msg.content + '\n'
+            t = '\n' + data + '\n'
             all_msg +=  t
             print all_msg
             print 'input content:'
@@ -66,12 +69,20 @@ while True:
     player.id = int(id)
     player.name = name
     msg.content = content
-    data = msg.SerializeToString()
-    packet_len = struct.pack(LENGTH_HEADER, len(data))
-    s.sendall(packet_len + data)
+
+    msg_pkg = msg.SerializeToString()
+    header = header_pb2.Header()
+    header.length = len(msg_pkg)
+    header.module = 'msg_req'
+    header.clazz = 'MsgReq'
+    header.method = 'msg'
+
+    header_pkg = header.SerializeToString()
+    packet_len = struct.pack(LENGTH_HEADER, len(header_pkg))
+    s.sendall(packet_len + header_pkg)
+    s.sendall(msg_pkg)
     if content == 'quit':
         game_over = True
         s.close()
         break
-
 

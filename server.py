@@ -42,18 +42,26 @@ def quit_conn(sock, name):
 
 
 def recv(sock, addr):
-    _len = recv_fill(sock, HEADER_LENGTH)
-    (packet_len,) = struct.unpack(LENGTH_HEADER, _len)
-    data = recv_fill(sock, packet_len)
-    header = header_pb2.Header()
-    header.ParseFromString(data)
-    m = importlib.import_module(header.module)
-    clazz = getattr(m, header.clazz)
-    obj = clazz()
-    func =  getattr(obj, header.method)
-    content = recv_fill(sock, header.length)
-    func(content)
-    sock.close()
+    socks.append(sock)
+    while True:
+        _len = recv_fill(sock, HEADER_LENGTH)
+        (packet_len,) = struct.unpack(LENGTH_HEADER, _len)
+        data = recv_fill(sock, packet_len)
+        header = header_pb2.Header()
+        header.ParseFromString(data)
+        m = importlib.import_module(header.module)
+        clazz = getattr(m, header.clazz)
+        obj = clazz()
+        func =  getattr(obj, header.method)
+        content = recv_fill(sock, header.length)
+        ret = func(content)
+        if ret == 'quit':
+            quit_conn(sock, 'xxx')
+        for item in socks:
+            print ret
+            _len = struct.pack(LENGTH_HEADER, len(ret))
+            item.sendall(_len + ret)
+        
 
 if __name__ == '__main__':
     server = StreamServer(('0.0.0.0', 8888), recv)
